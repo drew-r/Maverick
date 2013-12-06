@@ -1,0 +1,59 @@
+[06/12/2013 00:21:55] Initializing Configuration...
+[06/12/2013 00:21:55] Initializing AssemblyLocator...
+[06/12/2013 00:21:55] Initializing ServiceLocator...
+[06/12/2013 00:21:55] Preparing Lua virtual machine...
+[06/12/2013 00:21:55] Importing Maverick, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null :: Maverick
+[06/12/2013 00:21:55] Importing Maverick, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null :: System.GACManagedAccess
+[06/12/2013 00:21:55] Preprocessing C:\Users\Drew\Desktop\Projects\Maverick\ReleaseMaster\maverick-0.8.1-agpl\maverick-0.8.1-agpl-src\codesamples\PrependLicense.lua
+[06/12/2013 00:21:55] 	References System.IO.dll located at C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System.IO\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.IO.dll
+[06/12/2013 00:21:55] Adding reference to System...
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Text.RegularExpressions
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.CodeDom
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.ComponentModel
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.ComponentModel.Design
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.ComponentModel.Design.Serialization
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Diagnostics
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.CodeDom.Compiler
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Configuration
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.IO.Compression
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.IO
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Reflection
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Runtime.InteropServices
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Runtime.Versioning
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Threading
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Collections.Concurrent
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Media
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Windows.Markup
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Windows.Input
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.AccessControl
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Collections.Generic
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Collections.Specialized
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Collections.ObjectModel
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Runtime.InteropServices.ComTypes
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: Microsoft.Win32
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: Microsoft.CSharp
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: Microsoft.VisualBasic
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Permissions
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Cryptography
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Cryptography.X509Certificates
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Authentication.ExtendedProtection
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Authentication.ExtendedProtection.Configuration
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Claims
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.Sockets
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.Configuration
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.Cache
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.Security
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Security.Authentication
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.NetworkInformation
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.Mail
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.Mime
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Net.WebSockets
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Timers
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Web
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.Diagnostics.CodeAnalysis
+[06/12/2013 00:21:55] Importing System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 :: System.IO.Ports
+[06/12/2013 00:21:55] Executing root script body...
+[06/12/2013 00:21:55] Registering app container...
+[06/12/2013 00:21:55] Executing 1 app containers...
