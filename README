@@ -1,6 +1,23 @@
+Copyright © 2013 Drew Rathbone.
+drewrathbone@gmail.com 
+
+This file is part of Maverick.
+
+Maverick is free software, you can redistribute it and/or modify it under the terms of GNU Affero General Public License 
+as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
+You should have received a copy of the the GNU Affero General Public License, along with Maverick. 
+
+Maverick is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+Additional permission under the GNU Affero GPL version 3 section 7: 
+If you modify this Program, or any covered work, by linking or combining it with other code, such other code is not for 
+that reason alone subject to any of the requirements of the GNU Affero GPL version 3.
+
 * Free software licensed under a lesser version of the Affero GPL.
 * Framework that host scripts and applications written in a mix of Lua and C# compiled on the fly.
 * Includes a middleware oriented HTTP server module.
 * Ships with a simple Linq2Sql entity persistence module.
 * Ships with a demo web API built on these modules, among other code samples.
 * Documentation coming soon!
+
