@@ -122,17 +122,21 @@ namespace Maverick
 
         public static Type GetType(string type)
         {
-            string typeAssembly = "";
+            string typeNamespace = "";
             if (type.Contains('.'))
             {
-                typeAssembly = type.Split('.').First();
+                typeNamespace = type.Split('.').First();
                 type = type.Split('.').Last();                
             }
             return Type.GetType(type, null, new Func<Assembly, string, bool, Type>(
-                    (assembly, typename, throwErr) => { return Type.GetType(typename) ?? Type.GetType(typeAssembly + "." + typename + ", " + typeAssembly) ?? Type.GetType("MaverickDynamic." + typename + ", MaverickDynamic") ?? Type.GetType("Maverick." + typename + ", Maverick"); }
-                    ));
+                    (assembly, typename, throwErr) => { 
+                        return Type.GetType(type) ?? 
+                            Type.GetType(typename) ??
+                            Type.GetType(typeNamespace + "." + typename + ", " + typeNamespace) ??
+                            Type.GetType(typeNamespace + "." + typename + ", " + "MaverickDynamic") ??
+                            Type.GetType("MaverickDynamic." + typename + ", MaverickDynamic") ?? 
+                            Type.GetType("Maverick." + typename + ", Maverick"); }));
         }
-
 
     
     }
