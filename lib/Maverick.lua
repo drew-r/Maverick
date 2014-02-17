@@ -38,3 +38,21 @@ end
 function string.replace(target,find,replace)
 return Utility.ReplaceString(target,find,replace)
 end
+
+function exit()
+Scheduler.Exit()
+end
+
+function sync_callback(action)
+	return Scheduler.QueuedCallback(action)
+end
+  
+function async(target)
+	local proxy = MethodCaptureDelegator(target)
+	local indexable = {}	
+	return setmetatable(indexable, { __index = 
+		function(table,key)
+		 	local callable = {}
+		 	return setmetatable(callable, { __call = function(table,...) return Promise(proxy[key]:go(arr(arg))) end })  
+		end})
+end

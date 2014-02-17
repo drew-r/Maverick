@@ -23,21 +23,17 @@ using System.Reflection;
 using LuaInterface;
 using System.Collections;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Dynamic;
+using Lua511;
+
 
 namespace Maverick
 {
    
     public static class Utility
     {
-        //public static Dictionary<string, string> ToDictionary(this NameValueCollection nvc)
-        //{
-        //    Dictionary<string, string> args = new Dictionary<string, string>();
-        //    foreach (string arg in nvc.Keys)
-        //    {
-        //        args.Add(arg, nvc[arg]);
-        //    }
-        //    return args;
-        //}
 
         public static byte[] GetBytes(string str)
         {
@@ -46,7 +42,7 @@ namespace Maverick
             return bytes;
         }
 
-        		
+      
         public static IEnumerable<string> StringArrayFromTable(LuaTable t)
         {
             return ObjArrayFromTable(t).Cast<string>().ToArray();
@@ -133,6 +129,14 @@ namespace Maverick
 
             return msgBuilder.ToString();
         }
-        
-    }
+
+        public static string TypeName(object o)
+        {
+            return o.GetType().Name;
+        }
+
+
+    }               
+
+ 
 }

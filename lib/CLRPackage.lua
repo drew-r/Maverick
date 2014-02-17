@@ -31,23 +31,38 @@
 if not luanet then require 'luanet' end
 
 local packages = {}
+local _log_clr_cache = false
+function LOG_CLR_CACHE() 
+  _log_clr_cache = true
+end
+local function c_log(msg) 
+ if _log_clr_cache then 
+ 	maverick:log(msg) 		
+ 	end 
+end
+
 
 local mt = {
 	--- Lookup a previously unfound class and add it to our table
 	__index = function(package, classname)
-		local class = rawget(package, classname)
+	
+	local class = rawget(package, classname) 
+                  or  luanet.import_type(package.packageName .. "." .. classname)      
+        
+    if class then 
+    c_log("Cached pkg " .. package.packageName .. " cls " .. classname)
+    package[classname] = 	class	-- keep what we found around, so it will be shared
+    else    
+    end
 
-		if class == nil then
-			class = luanet.import_type(package.packageName .. "." .. classname)
-			package[classname] = class		-- keep what we found around, so it will be shared
-		end
-
-		return class
+	return class
 	end
-	}
+}
+
 
 local globalMT = {
 	__index = function(T,classname)
+	if classname == "_async" then return setmetatable({},{__index = function(t,i) return async(_G[i]) end}) end
 			for i,package in ipairs(packages) do
 			    local class = package[classname]
 				if class then
@@ -65,7 +80,6 @@ function CLRPackage(assemblyName, packageName)
   -- a sensible default...
   packageName = packageName or assemblyName
   luanet.load_assembly(assemblyName)			-- Make sure our assembly is loaded
-
   -- FIXME - table.packageName could instead be a private index (see Lua 13.4.4)
   t.packageName = packageName
   setmetatable(t, mt)
@@ -82,7 +96,7 @@ function import (assemblyName, packageName)
    		 packageName = assemblyName
    	 end
     end
-    local t = CLRPackage(assemblyName,packageName)
+    local t = CLRPackage(assemblyName,packageName)    
     table.insert(packages,t)
     return t
 end

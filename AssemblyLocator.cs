@@ -37,12 +37,11 @@ namespace Maverick
         {
             string gacPath;
             string resolvedPath;
-
             resolvedPath =
-                File.Exists(relativeTo + reference) ? relativeTo + reference :
-                File.Exists(AppDomain.CurrentDomain.BaseDirectory + reference) ? AppDomain.CurrentDomain.BaseDirectory + reference : //refName;
-                File.Exists((gacPath = System.GACManagedAccess.AssemblyCache.QueryAssemblyInfo(Path.GetFileNameWithoutExtension(reference)))) ? gacPath : reference;
-
+                    File.Exists(relativeTo + reference) ? relativeTo + reference :
+                    File.Exists(AppDomain.CurrentDomain.BaseDirectory + reference) ? AppDomain.CurrentDomain.BaseDirectory + reference : //refName;
+                    File.Exists((gacPath = System.GACManagedAccess.AssemblyCache.QueryAssemblyInfo(Path.GetFileNameWithoutExtension(reference)))) ? gacPath : reference;
+            
             return resolvedPath;
         }
 

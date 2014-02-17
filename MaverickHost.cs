@@ -27,10 +27,15 @@ namespace Maverick
     class MaverickHost
     {
         AppManifest _appManifest;
-        Lua _luaVM = new Lua();
-        IMaverickLog _log;
         
-        public MaverickHost(string[] args)
+        Lua _luaVM = new Lua();
+        public Lua LuaVM { get { return _luaVM; } }
+        IMaverickLog _log;
+
+
+        //this class (along with alot of other code) needs to be isolated from environment (i.e the console)
+        //i think REPL should be implemented by Program - Program uses MaverickHost to either provide REPL, or to run a script or app if given a path
+        public MaverickHost(params string[] args)
         {
             //provide a default log
             ServiceLocator.MapType<IMaverickLog, Log>();
@@ -69,8 +74,11 @@ namespace Maverick
        
             //resolve the log service again in case it has been remapped
             _log = ServiceLocator.Resolve<IMaverickLog>();
-             
+
+          
         }
+
+
 
         private void repl()
         {
@@ -132,6 +140,9 @@ namespace Maverick
                 foreach(MaverickApp app in _appContainers.Reverse<MaverickApp>()) { app.Run(); }
             }
 
+            _log.Write("Starting scheduler...");
+            Scheduler.Run();
+            _log.Write("Scheduler stopped.");
         }
 
 
@@ -141,7 +152,7 @@ namespace Maverick
             _log.Write("Registering app container...");
             MaverickApp app = new MaverickApp();
             _appContainers.Add(app);
-            return app;
+            return app;            
         }
 
 
@@ -161,6 +172,10 @@ namespace Maverick
         {
             _log.Write(message);
             Environment.Exit(0);
+        }
+        public void registerFunction(string path,object target, Delegate func)
+        {
+            _luaVM.RegisterFunction(path, target, func.Method);
         }
 
     }

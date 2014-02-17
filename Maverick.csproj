@@ -29,6 +29,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,7 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -96,7 +97,7 @@
       <HintPath>lib\lua51.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.36861, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=MSIL">
+    <Reference Include="LuaInterface, Version=2.0.4.1014, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\LuaInterface.dll</HintPath>
     </Reference>
@@ -111,6 +112,7 @@
   <ItemGroup>
     <Compile Include="AppCompiler.cs" />
     <Compile Include="AssemblyLocator.cs" />
+    <Compile Include="MethodCaptureDelegator.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="CSharpCompiler.cs" />
     <Compile Include="DynamicProxy.cs" />
@@ -120,12 +122,14 @@
     <Compile Include="IMaverickLog.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MaverickAssemblyInitializer.cs" />
+    <Compile Include="Promise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Scheduler.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="MaverickApp.cs" />
     <Compile Include="MaverickHost.cs" />

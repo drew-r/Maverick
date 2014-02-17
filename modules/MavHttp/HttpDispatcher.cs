@@ -28,8 +28,8 @@ namespace MavHttp
         object _responseLock = new object();
         public void Dispatch(HttpListenerContext context)
         {
-            lock (_responseLock)
-            {
+            //lock (_responseLock)
+            //{
                 Queue<IHttpMiddleware> _mwQ = new Queue<IHttpMiddleware>(_middlewareStack.Where(
                     (item) =>
                     {
@@ -65,7 +65,7 @@ namespace MavHttp
                     mw.Run(request, response, next);                  
                 };
                 next();                
-            }
+            //}
         }
 
         

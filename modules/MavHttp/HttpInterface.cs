@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MavHttp
@@ -47,13 +48,13 @@ namespace MavHttp
                     _listener.Prefixes.Add(uriPrefix); 
                 }
                 _listener.Start();
-                AsyncCallback callback = new AsyncCallback(arg => contextCallback(arg));
 
+                Scheduler.Request();
                 new Task(delegate
                 {
                     while (State == HttpInterfaceState.Running)
                     {
-                        IAsyncResult res = _listener.BeginGetContext(callback, null);
+                        IAsyncResult res = _listener.BeginGetContext(contextCallback, null);
                         res.AsyncWaitHandle.WaitOne();                        
                     }
                 }).Start();                
@@ -66,24 +67,30 @@ namespace MavHttp
         }
 
         IMaverickLog _log = ServiceLocator.Resolve<IMaverickLog>();
+
         
+
         private void contextCallback(IAsyncResult arg)
         {
             HttpListenerContext context = _listener.EndGetContext(arg);
-            try
-            {
-                _contextDispatcher.Dispatch(context);
-            }
-            catch (Exception e)
-            {
-                context.Response.StatusCode = 500;
-                if (ExceptionResponseEnabled) { ExceptionResponse(context.Response, e); }
-            }
-            finally
-            {
-                try { context.Response.Close(); }
-                catch (Exception e) { }
-            }
+            Scheduler.Enqueue(() => 
+            {            
+                try
+                {
+                    ContextDispatcher.Dispatch(context);
+                }
+                catch (Exception e)
+                {
+                    context.Response.StatusCode = 500;
+                    if (ExceptionResponseEnabled) { ExceptionResponse(context.Response, e); }
+                }
+                finally
+                {
+                    //try { context.Response.Close(); }
+                    //catch (Exception e) { }
+                }
+                return null;
+            });
             
         }
 
