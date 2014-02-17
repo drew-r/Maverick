@@ -1,5 +1,4 @@
 #reference 'MavHttp.dll'
-#compile 'Something.cs'
 import 'System.Threading.Tasks'
 LOG_CLR_CACHE()
 
@@ -35,4 +34,4 @@ serv:listen("http://+:8080/")
 Console.WriteLine("Listening 8080")
 
 Console.ReadKey()
-
+exit()
