@@ -65,6 +65,11 @@ namespace MavHttp
             }            
         }
         
+        public static void stringify(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+        
         static public dynamic read(Stream jsonStream)
         {
             return createObjFromJObj(_serializer.Deserialize(new JsonTextReader(new StreamReader(jsonStream))) as JObject);
