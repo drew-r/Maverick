@@ -28,9 +28,10 @@ namespace Maverick
         dynamic result = null;
         readonly Task task;
 
-        public void success(Action<object> cb)
+        public Promise success(Action<object> cb)
         {
             task.ContinueWith((t) => Scheduler.Enqueue((i) => cb(result)));
+            return this;
         }
 
         void raiseException(Exception e)
@@ -41,10 +42,11 @@ namespace Maverick
 
         Exception _taskException;
         Action<object> _exceptionCallback;
-        public void error(Action<object> cb)
+        public Promise error(Action<object> cb)
         {
             _exceptionCallback = cb; 
             if (_taskException != null) { raiseException(_taskException); }            
+            return this;
         }
     }
 }
