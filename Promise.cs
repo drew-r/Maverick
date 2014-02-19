@@ -37,7 +37,10 @@ namespace Maverick
         void raiseException(Exception e)
         {
             _taskException = e;
-            Scheduler.Enqueue(() => _exceptionCallback(_taskException));
+            if (_exceptionCallback != null) 
+            { 
+                Scheduler.Enqueue(() => _exceptionCallback(_taskException));
+            }
         }
 
         Exception _taskException;
