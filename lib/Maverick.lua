@@ -40,7 +40,7 @@ return Utility.ReplaceString(target,find,replace)
 end
 
 function exit()
-Scheduler.Exit()
+	Scheduler.Exit()
 end
 
 function sync_callback(action)
