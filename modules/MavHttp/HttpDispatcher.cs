@@ -40,7 +40,7 @@ namespace MavHttp
                             (item.Route == null && item.Method == context.Request.HttpMethod)
                             ||
                             (Regex.IsMatch(context.Request.HttpMethod + "#" + context.Request.Url.AbsolutePath.TrimEnd('/') + "/",
-                                item.Method + "#/" + Regex.Replace((item.Route.Trim('/') + "/"), ":.+?/", "[^/]+?/") + "$"));
+                                item.Method + "#" + Regex.Replace((item.Route.TrimEnd('/') + "/"), ":.+?/", "[^/]+?/") + "$"));
                     }
                     ).OrderBy((i) => i.Route != null));
 
