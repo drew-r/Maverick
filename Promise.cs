@@ -61,7 +61,7 @@ namespace Maverick
             _exceptionCallback = cb; 
             if (_taskException != null) 
             {
-                Scheduler.Enqueue(() => _exceptionCallback(_taskException))
+                Scheduler.Enqueue(() => _exceptionCallback(_taskException));
             }            
             return this;
         }
