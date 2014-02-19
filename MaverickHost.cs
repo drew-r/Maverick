@@ -55,7 +55,7 @@ namespace Maverick
             _luaVM.DoString("require \"lib/Maverick\"");
             importAssembly(Assembly.GetAssembly(this.GetType()));
             _luaVM["maverick"] = this;
-
+            
             if (Configuration.REPL) { repl(); return; }
                          
             _appManifest = AppCompiler.Make(Configuration.AppPath);
@@ -147,15 +147,14 @@ namespace Maverick
 
 
         List<MaverickApp> _appContainers = new List<MaverickApp>();
-        public MaverickApp app()
+        public MaverickApp app(Action func)
         {
             _log.Write("Registering app container...");
-            MaverickApp app = new MaverickApp();
+            MaverickApp app = new MaverickApp(func);
             _appContainers.Add(app);
             return app;            
         }
-
-
+                
         public void debug()
         {
             System.Diagnostics.Debugger.Break();

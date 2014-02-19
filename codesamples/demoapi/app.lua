@@ -27,8 +27,6 @@
 #include 'http/person.lua'															--include any additional lua 
 #include 'http/user.lua'
 																						
-
-
 																						
 --configuration
 
@@ -126,9 +124,8 @@ next:Invoke()
 end)
 
 
-app = maverick:app()																	--create an app instance
-app:run(function()																		--show time! run is called after included Lua is executed.
-
+app = maverick:app(function()							--show time! function passed in here is called after included Lua is executed.
+  --the app instance returned can be indexed for objects via a string and so can be used to store app scope data
 	http:listen('http://+:8080/')
 	Console.WriteLine("Listening..")
 	Console.ReadKey()
