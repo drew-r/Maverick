@@ -76,8 +76,11 @@ namespace Maverick
         {
             FileManifest ppr = preprocess(appPath);
             AppManifest appMan = new AppManifest(ppr.Body, ppr.Includes, ppr.Compiles, ppr.References);
-            appMan.AddReference(AssemblyLocator.ResolveReference("System"));
             _log.Write("Adding reference to System...");
+            appMan.AddReference(AssemblyLocator.ResolveReference("System"));
+            _log.Write("Adding reference to mscorlib...");
+            appMan.AddReference(AssemblyLocator.ResolveReference("mscorlib"));
+            
             if (ppr.Compiles.Count() > 0)
             {
                 _log.Write("Compiling C#...");
