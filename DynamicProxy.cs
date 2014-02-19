@@ -68,7 +68,7 @@ namespace Maverick
             if (_proxyType.GetMember("set_" + name).Count() > 0)
             {
                 PropertyInfo prop = _proxyType.GetProperty(name);
-                prop.SetValue(_proxyObj, Convert.ChangeType(value,prop.PropertyType), null);
+                prop.SetValue(_proxyObj, value, null);
                 return true;
             }
             _idx[name] = value;
