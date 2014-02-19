@@ -14,41 +14,55 @@ namespace Maverick
             Scheduler.Request();
             task = new Task(() =>
             {
-                result = asyncOp();
+                try
+                {
+                    _result = asyncOp();
+                }
+                catch(Exception e)
+                {
+                    _taskException = e;
+                    if (_exceptionCallback != null) 
+                    { 
+                        Scheduler.Enqueue(() => _exceptionCallback(_taskException));
+                    }
+                    return;
+                }
+                
+                if (_successCallback != null)
+                {
+                    Scheduler.Enqueue(() => _successCallback(_result));
+                }
             });
-            try
-            {
-                task.Start();
-            }
-            catch (Exception e)
-            {
-                raiseException(_taskException);
-            }
+            
+            
+            
+            task.Start();
         }
-        dynamic result = null;
+        
         readonly Task task;
-
+        
+        dynamic _result = null;
+        Action<object> _successCallback;
         public Promise success(Action<object> cb)
         {
-            task.ContinueWith((t) => Scheduler.Enqueue((i) => cb(result)));
+            _successCallback = cb;
+            if (_result != null) 
+            {
+                Scheduler.Enqueue(() => _successCallback(_result));
+            }
             return this;
         }
-
-        void raiseException(Exception e)
-        {
-            _taskException = e;
-            if (_exceptionCallback != null) 
-            { 
-                Scheduler.Enqueue(() => _exceptionCallback(_taskException));
-            }
-        }
+       
 
         Exception _taskException;
         Action<object> _exceptionCallback;
         public Promise error(Action<object> cb)
         {
             _exceptionCallback = cb; 
-            if (_taskException != null) { raiseException(_taskException); }            
+            if (_taskException != null) 
+            {
+                Scheduler.Enqueue(() => _exceptionCallback(_taskException))
+            }            
             return this;
         }
     }
