@@ -17,8 +17,8 @@ AppVersion={#MyAppVersion}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-LicenseFile=Build\LICENSE
-InfoAfterFile=Build\README
+LicenseFile=..\LICENSE
+InfoAfterFile=..\README
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
@@ -36,8 +36,10 @@ Name: addToPATH; Description: "&Add Maverick to PATH";
 
 
 [Files]
-Source: "Build\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Build\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\README"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
