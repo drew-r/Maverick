@@ -32,7 +32,12 @@ namespace Maverick
 
         public object go(object[] args)
         {
-            args = args.Take(args.Length-1).ToArray();
+            if (args == null) { args = new object[] { }; } 
+            else
+            { 
+                args = args.Take(args.Length-1).ToArray();
+            }
+            
             return new Func<object>(() => {
                 MethodBase method = null;
                 
