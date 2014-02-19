@@ -65,7 +65,7 @@ namespace MavHttp
             }            
         }
         
-        public static void stringify(object obj)
+        public static string stringify(object obj)
         {
             return JsonConvert.SerializeObject(obj);
         }

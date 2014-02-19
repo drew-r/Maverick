@@ -13,17 +13,15 @@ namespace Maverick
         {
             _syncQueue.Add(new Tuple<Func<object>, Action<object>>(func, callback));
         }
-        public static void Enqueue(Func<object> func)
+        
+        public static void Enqueue(Action<object> action)
         {
-            Enqueue(func, (x) => { });
+            Enqueue(() => { return null; }, action);
         }
-        public static void Enqueue(Action<object> callback)
+
+        public static void Enqueue(Action action)
         {
-            Enqueue(() => { return null; }, callback);
-        }
-        public static void Enqueue(Action callback)
-        {
-            Enqueue(() => { return null; }, (x) => { callback(); });
+            Enqueue(() => { return null; }, (x) => { action(); });
         }
 
         public static void Exit()

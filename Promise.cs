@@ -17,6 +17,7 @@ namespace Maverick
                 try
                 {
                     _result = asyncOp();
+	  	            _success = true;		
                 }
                 catch(Exception e)
                 {
@@ -24,11 +25,10 @@ namespace Maverick
                     if (_exceptionCallback != null) 
                     { 
                         Scheduler.Enqueue(() => _exceptionCallback(_taskException));
-                    }
-                    return;
+                    }                    
                 }
                 
-                if (_successCallback != null)
+                if (_success && _successCallback != null)
                 {
                     Scheduler.Enqueue(() => _successCallback(_result));
                 }
@@ -41,12 +41,13 @@ namespace Maverick
         
         readonly Task task;
         
+	    bool _success = false;
         dynamic _result = null;
         Action<object> _successCallback;
         public Promise success(Action<object> cb)
         {
             _successCallback = cb;
-            if (_result != null) 
+            if (_success) 
             {
                 Scheduler.Enqueue(() => _successCallback(_result));
             }

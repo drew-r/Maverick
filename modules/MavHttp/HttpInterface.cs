@@ -88,8 +88,7 @@ namespace MavHttp
                 {
                     //try { context.Response.Close(); }
                     //catch (Exception e) { }
-                }
-                return null;
+                }                
             });
             
         }
