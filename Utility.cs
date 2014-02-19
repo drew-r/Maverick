@@ -33,16 +33,7 @@ namespace Maverick
 {
    
     public static class Utility
-    {
-
-        public static byte[] GetBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-
-      
+    {      
         public static IEnumerable<string> StringArrayFromTable(LuaTable t)
         {
             return ObjArrayFromTable(t).Cast<string>().ToArray();
@@ -101,13 +92,7 @@ namespace Maverick
                 return Activator.CreateInstance(t);
             }            
             else return null;
-        }
-
-        public static Encoding GetEncoding(string encodingName)
-        {
-            return Encoding.GetEncoding(encodingName);
-        }
-
+        }       
 
         public static string ReplaceString(string target, string find, string replace)
         {
@@ -134,8 +119,6 @@ namespace Maverick
         {
             return o.GetType().Name;
         }
-
-
     }               
 
  
