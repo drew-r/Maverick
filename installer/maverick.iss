@@ -34,12 +34,14 @@ Name: associatelua; Description: "&Open .lua files with Maverick";
 Name: associatemav; Description: "&Open .mav files with Maverick"; 
 Name: addToPATH; Description: "&Add Maverick to PATH"; 
 
+[Dirs]
+Name: "{app}"; Permissions: users-modify;
 
 [Files]
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\README"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\bin\Release\*"; DestDir: "{app}"; Excludes: "maverick.log"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
