@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -84,8 +85,8 @@ namespace Maverick
             if (ppr.Compiles.Count() > 0)
             {
                 _log.Write("Compiling C#...");
-                CSharpCompiler.Compile("MaverickDynamic", ppr.Compiles, ppr.References);
-                appMan.AddReference("MaverickDynamic");
+                Assembly mavDynamic = CSharpCompiler.Compile("MaverickDynamic", ppr.Compiles, ppr.References);                             
+               appMan.AddReference(mavDynamic.Location);
                 _log.Write("Adding reference to MaverickDynamic...");
             }
 
