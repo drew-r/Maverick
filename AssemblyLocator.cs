@@ -36,13 +36,35 @@ namespace Maverick
         public static string ResolveReference(string reference, string relativeTo = null)
         {
             string gacPath;
-            string resolvedPath;
-            resolvedPath =
-                    File.Exists(relativeTo + reference) ? relativeTo + reference :
-                    File.Exists(AppDomain.CurrentDomain.BaseDirectory + reference) ? AppDomain.CurrentDomain.BaseDirectory + reference : //refName;
-                    File.Exists((gacPath = System.GACManagedAccess.AssemblyCache.QueryAssemblyInfo(Path.GetFileNameWithoutExtension(reference)))) ? gacPath : reference;
+            string resolvedPath = null;
+
+            string[] refExts = { "", ".dll", ".exe" };
+            for (int i = 0; resolvedPath == null && i < refExts.Length; i++)
+            {
+                string refExt = refExts[i];
+                resolvedPath =
+                    File.Exists(relativeTo + reference + refExt) ? relativeTo + reference + refExt :
+                    File.Exists(AppDomain.CurrentDomain.BaseDirectory + reference + refExt) ? AppDomain.CurrentDomain.BaseDirectory + reference + refExt : 
+                    null;
+            }
+
+
+            resolvedPath = resolvedPath ?? (File.Exists((gacPath = queryGAC(Path.GetFileNameWithoutExtension(reference)))) ? gacPath : null);                    
             
+            if (resolvedPath == null) { throw new FileNotFoundException("Could not resolve reference " + reference + (relativeTo != null ? " relative to " + relativeTo : "") + "."); }
             return resolvedPath;
+        }
+
+        static string queryGAC(string reference)
+        {
+            try
+            {
+                return System.GACManagedAccess.AssemblyCache.QueryAssemblyInfo(reference);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public static Assembly ResolveAssembly(string identifier, bool tryLoad = false)
