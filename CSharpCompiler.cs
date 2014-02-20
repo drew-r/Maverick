@@ -28,10 +28,10 @@ namespace Maverick
     static class CSharpCompiler
     {
      
-        public static List<Type> Compile(string assemblyName, string[] fileList, params string[] referencedAssemblies)
+        public static Assembly Compile(string assemblyName, string[] fileList, params string[] referencedAssemblies)
         {
             CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            CompilerParameters paras = new CompilerParameters() { OutputAssembly = Path.Combine(Path.GetTempPath(), assemblyName), GenerateInMemory = true };            
+            CompilerParameters paras = new CompilerParameters() { OutputAssembly = Path.Combine(Path.GetTempPath(), assemblyName) };            
             paras.ReferencedAssemblies.Add(AppDomain.CurrentDomain.BaseDirectory + "Maverick.exe");
             if (referencedAssemblies != null) 
             {
@@ -52,7 +52,7 @@ namespace Maverick
                 }
                 throw new Exception("Compilation error(s)..." + msg);
             }
-            return results.CompiledAssembly.GetTypes().ToList();         
+            return results.CompiledAssembly;         
             
         }
         
