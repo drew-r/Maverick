@@ -120,18 +120,19 @@ namespace Maverick
             _map[abstractType] = concreteTypeOrConstructor;
         }
 
-        public static Type GetType(string type)
+        public static Type GetType(string typeIdentifier)
         {
             string typeNamespace = "";
-            if (type.Contains('.'))
+            string type = "";
+            if (typeIdentifier.Contains('.'))
             {
-                typeNamespace = type.Split('.').First();
-                type = type.Split('.').Last();                
+                typeNamespace = typeIdentifier.Split('.').First();
+                type = typeIdentifier.Split('.').Last();                
             }
             return Type.GetType(type, null, new Func<Assembly, string, bool, Type>(
                     (assembly, typename, throwErr) => { 
                         return Type.GetType(type) ?? 
-                            Type.GetType(typename) ??
+                            Type.GetType(typeIdentifier) ??
                             Type.GetType(typeNamespace + "." + typename + ", " + typeNamespace) ??
                             Type.GetType(typeNamespace + "." + typename + ", " + "MaverickDynamic") ??
                             Type.GetType("MaverickDynamic." + typename + ", MaverickDynamic") ?? 
