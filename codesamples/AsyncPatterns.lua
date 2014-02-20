@@ -1,7 +1,4 @@
-#reference 'MavHttp.dll'
-
-
-import 'System.Threading.Tasks'
+#reference 'MavHttp'
 
 LOG_CLR_CACHE()
 

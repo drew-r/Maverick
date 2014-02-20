@@ -39,10 +39,10 @@ namespace Maverick
             }
             
             return new Func<object>(() => {
-                MethodBase method = null;
-                
+                               
                 if (!_static) { args = args.Skip(1).ToArray(); }
 
+                MethodBase method = null;
                 int i = 0;
                     do
                     {
