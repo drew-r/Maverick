@@ -127,8 +127,9 @@ namespace Maverick
             if (typeIdentifier.Contains('.'))
             {
                 typeNamespace = typeIdentifier.Split('.').First();
-                type = typeIdentifier.Split('.').Last();                
+                type = typeIdentifier.Split('.').Last();
             }
+            else { type = typeIdentifier; }
             return Type.GetType(type, null, new Func<Assembly, string, bool, Type>(
                     (assembly, typename, throwErr) => { 
                         return Type.GetType(type) ?? 
