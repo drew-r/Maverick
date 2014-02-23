@@ -32,12 +32,15 @@ namespace Maverick
         {
             string[] appScript = File.ReadAllLines(srcPath);
             string srcPathDir = Path.GetDirectoryName(srcPath) + "\\";
+            List<string> sanitizedAppScript = new List<string>();
             List<string> includes = new List<string>();
             List<string> compiles = new List<string>();
             List<string> references = new List<string>();
             _log.Write("Preprocessing " + srcPath);
-            foreach (string line in appScript.Where(item => item.StartsWith("#")))
+            for (int i = 0; i < appScript.Length; i++)
             {
+                string line = appScript[i];
+                if (!line.StartsWith("#")) sanitizedAppScript.Add(line);
                 int idxOfCmt;
                 string preprocessorInstruction = String.Concat(line.Take(((idxOfCmt = line.IndexOf("--")) == -1) ? line.Length : idxOfCmt).Skip(1)).Trim();
 
@@ -53,24 +56,59 @@ namespace Maverick
 
                 if (preprocessorInstruction.StartsWith("compile"))
                 {
-                    string filename = preprocessorInstruction.Split(' ')[1].Trim('\'', '"').Replace('/', '\\');
-                    compiles.Add(Path.GetDirectoryName(srcPath) + "\\" + filename);
-                    _log.Write("\tCompiles " + filename);
+                    string arg = preprocessorInstruction.Split(' ')[1];
+                    string src = "";
+                    if (arg.StartsWith("[["))
+                    {
+                        string currentLine = preprocessorInstruction;
+                        int startIdx = currentLine.IndexOf("[[") + 2;
+                        int terminatorIdx;
+                        while (true)
+                        {
+                            if (startIdx < currentLine.Length)
+                            {
+                                if ((terminatorIdx = currentLine.IndexOf("]]")) > -1)
+                                {
+                                    src = src + currentLine.Substring(startIdx, terminatorIdx);
+                                    break;
+                                }
+                                else
+                                {
+                                    src = src + currentLine.Substring(startIdx, currentLine.Length);
+                                }
+                            }
+                            i++;
+                            currentLine = appScript[i];
+                            startIdx = 0;
+                        }
+                    }
+                    else
+                    {
+                        string filename = arg.Trim('\'', '"').Replace('/', '\\');
+                        src = File.ReadAllText(Path.Combine(Path.GetDirectoryName(srcPath), filename));
+                        _log.Write("\tCompiles " + filename);
+                    }
+                                                        
+                    compiles.Add(src);
+                    
                 }
 
                 if (preprocessorInstruction.StartsWith("reference"))
                 {
                     string refName = preprocessorInstruction.Split(' ')[1].Trim('\'', '"');
-                    string resolvedPath;                    
+                    string resolvedPath;
 
                     resolvedPath = AssemblyLocator.ResolveReference(refName, srcPathDir);
-                        
+
                     references.Add(resolvedPath);
                     _log.Write("\tReferences " + refName + " located at " + resolvedPath);
                 }
+
             }
 
-            return new FileManifest(String.Join("\r\n", appScript.Where(item => !item.StartsWith("#"))), includes.ToArray(), compiles.ToArray(), references.ToArray());
+            
+                                                                        
+            return new FileManifest(String.Join("\r\n", sanitizedAppScript), includes.ToArray(), compiles.ToArray(), references.ToArray());
 
         }
         public static AppManifest Make(string appPath)
@@ -85,7 +123,7 @@ namespace Maverick
             if (ppr.Compiles.Count() > 0)
             {
                 _log.Write("Compiling C#...");
-                Assembly mavDynamic = CSharpCompiler.Compile("MaverickDynamic", ppr.Compiles, ppr.References);                             
+                Assembly mavDynamic = CSharpCompiler.Compile(Path.Combine(Path.GetTempPath(), "MaverickDynamic"), ppr.Compiles, ppr.References);                             
                appMan.AddReference(mavDynamic.Location);
                 _log.Write("Adding reference to MaverickDynamic...");
             }
