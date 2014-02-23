@@ -53,7 +53,7 @@ namespace Maverick
             _log.Write("Preparing Lua virtual machine...");
             _luaVM.DoString("require \"lib/CLRPackage\"");
             _luaVM.DoString("require \"lib/Maverick\"");
-            importAssembly(Assembly.GetAssembly(this.GetType()));
+            importAssemblyNamespaces(Assembly.GetAssembly(this.GetType()));
             _luaVM["maverick"] = this;
             
             if (Configuration.REPL) { repl(); return; }
@@ -67,9 +67,7 @@ namespace Maverick
                 {
                     throw new Exception("Unable to resolve assembly " + reference);
                 }
-                initializeAssembly(assembly);
-                importAssembly(assembly);               
-
+                ImportAssembly(assembly);
             }                                             
        
             //resolve the log service again in case it has been remapped
@@ -113,7 +111,7 @@ namespace Maverick
 
         }
 
-        void importAssembly(Assembly assembly)
+        void importAssemblyNamespaces(Assembly assembly)
         {              
             var assemblyNamespaces = (from type in assembly.GetExportedTypes() select new { Namespace = type.Namespace, Assembly = assembly.FullName }).Distinct();
             foreach (var assemblyNamespace in assemblyNamespaces)
@@ -122,6 +120,12 @@ namespace Maverick
                 _luaVM.DoString(String.Format("import('{0}','{1}')", assemblyNamespace.Assembly, assemblyNamespace.Namespace));
             }
                        
+        }
+
+        public void ImportAssembly(Assembly assembly)
+        {
+            initializeAssembly(assembly);
+            importAssemblyNamespaces(assembly);            
         }
          
         internal void Run()
@@ -165,7 +169,15 @@ namespace Maverick
         }
         public void log(string message)
         {
-            _log.Write(message);
+            log(message, false);            
+        }
+        public void log(string message, bool verboseOnly)
+        {
+            if (verboseOnly) { _log.WriteIfVerbose(message); }
+            else
+            {
+                _log.Write(message);
+            }
         }
         public void die(string message)
         {
