@@ -31,8 +31,9 @@ namespace Maverick
 
         static StreamWriter _sw;
         static object _swLock = new object();
-        static void write(string message)
+        static void write(string message,bool verboseOnly = false)
         {
+            if (verboseOnly && !Configuration.Verbose) return;
             if (Configuration.Verbose)
             {
                 Console.WriteLine(message);
@@ -56,6 +57,10 @@ namespace Maverick
         public void Write(string message)
         {
             write(message);
+        }
+        public void WriteIfVerbose(string message)
+        {
+            write(message, true);
         }
         public void Dispose()
         {

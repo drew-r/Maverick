@@ -24,5 +24,7 @@ namespace Maverick
     public interface IMaverickLog
     {
         void Write(string message);
+        void WriteIfVerbose(string message);
+            
     }
 }
