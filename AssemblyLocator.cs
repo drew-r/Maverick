@@ -45,12 +45,10 @@ namespace Maverick
                 resolvedPath =
                     File.Exists(relativeTo + reference + refExt) ? relativeTo + reference + refExt :
                     File.Exists(AppDomain.CurrentDomain.BaseDirectory + reference + refExt) ? AppDomain.CurrentDomain.BaseDirectory + reference + refExt : 
+                    File.Exists((gacPath = queryGAC(Path.GetFileNameWithoutExtension(reference + refExt)))) ? gacPath :
                     null;
             }
 
-
-            resolvedPath = resolvedPath ?? (File.Exists((gacPath = queryGAC(Path.GetFileNameWithoutExtension(reference)))) ? gacPath : null);                    
-            
             if (resolvedPath == null) { throw new FileNotFoundException("Could not resolve reference " + reference + (relativeTo != null ? " relative to " + relativeTo : "") + "."); }
             return resolvedPath;
         }
