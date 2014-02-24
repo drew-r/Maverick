@@ -2,7 +2,7 @@
 #reference 'MavEntity'
 #reference 'System.Data.Linq.dll'
 #reference 'Newtonsoft.Json'
-#compile '\\demoapi\\entities\\Person.cs'
+#compile 'demoapi/entities/Person.cs'
 
 
 LOG_CLR_CACHE()
@@ -27,11 +27,9 @@ end)
 
 serv:GET('/async',function(req,res)	
 
-sw = StreamWriter(res.OutputStream)
-sw.AutoFlush = true
 
 -- _async mirrors the global table but wraps its elements with async(), providing an alternative syntax. 
-_async.sw:Write("Hello Internet! (async)",1):success(function() res:Close() end):error(function(e) print(tostring(e)) end)
+_async.JSON.write(res.OutputStream,"Hello Internet! (async)"):success(function() res:Close() res = nil req = nil end):error(function(e) print(tostring(e)) end)
 	
 end)
 
@@ -51,10 +49,10 @@ end)
 serv:GET('/data',function(req,res)
 
 local data = EntityContext("Server=localhost;Database=demoapi;Trusted_Connection=True;") 
-_async.JSON.stringify(Q(data.Person)):success(function(x)
-			sw = StreamWriter(res.OutputStream)
-			_async.sw:Write(x):success(function() res:Close() end)
-										end):error(function(e) res:Close(Encoding.UTF8:GetBytes(tostring(e))) end)
+local q = Q(data.Person)
+_async.JSON.write(res.OutputStream,q)
+	:success(function() data:Dispose() data = nil res:Close() res = nil req = nil q = nil end)
+	:error(function(e) res:Close(Encoding.UTF8:GetBytes(tostring(e))) end)
 
 end)
 
@@ -65,6 +63,7 @@ local data = EntityContext("Server=localhost;Database=demoapi;Trusted_Connection
 sw = StreamWriter(res.OutputStream)
 sw:Write(JSON.stringify(Q(data.Person)))
 res:Close()
+data:Dispose()
 
 end)
 
