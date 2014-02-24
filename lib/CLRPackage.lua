@@ -63,6 +63,7 @@ local mt = {
 local globalMT = {
 	__index = function(T,classname)
 	if classname == "_async" then return setmetatable({},{__index = function(t,i) return async(_G[i]) end}) end
+	--if classname == "_generic" then return setmetatable({}, { __index = function(t,i) return generic(_G[i]) end }) end
 			for i,package in ipairs(packages) do
 			    local class = package[classname]
 				if class then
@@ -122,7 +123,7 @@ function enum(o)
 end
 
 -- nearly always need this!
-import "System"
+--import "System" --deprecated - should already be imported
 
 
 
