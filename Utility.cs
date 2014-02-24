@@ -119,6 +119,53 @@ namespace Maverick
         {
             return o.GetType().Name;
         }
+
+        public static Type GetUnderlyingType(LuaInterface.ProxyType type)
+        {
+            return type.UnderlyingSystemType;
+        }
+
+        //public static class LuaDelegateConverter
+        //{
+        //    public static Action Action;
+        //    public static Action<object> Action_1;
+        //    public static Action<object,object> Action_2;
+        //    public static Action<object, object, object> Action_3;
+        //    public static Action<object, object, object, object> Action_4;
+        //    public static Action<object, object, object, object, object> Action_5;
+        //    public static Action<object, object, object, object, object, object> Action_6;
+        //    public static Action<object, object, object, object, object, object, object> Action_7;
+        //    public static Action<object, object, object, object, object, object, object, object> Action_8;
+        //    public static Action<object, object, object, object, object, object, object, object, object> Action_9;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object> Action_10;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object> Action_11;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object> Action_12;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object> Action_13;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object, object> Action_14;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Action_15;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object,object> Action_16;
+
+        //    public static Func<object> Func;
+        //    public static Func<object, object> Func_1;
+        //    public static Func<object, object, object> Func_2;
+        //    public static Func<object, object, object, object> Func_3;
+        //    public static Func<object, object, object, object, object> Func_4;
+        //    public static Func<object, object, object, object, object, object> Func_5;
+        //    public static Func<object, object, object, object, object, object, object> Func_6;
+        //    public static Func<object, object, object, object, object, object, object, object> Func_7;
+        //    public static Func<object, object, object, object, object, object, object, object, object> Func_8;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object> Func_9;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object> Func_10;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object> Func_11;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object> Func_12;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_13;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_14;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_15;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_16;
+
+        //}
+
+
     }               
 
  
