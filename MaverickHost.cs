@@ -14,7 +14,7 @@
 //If you modify this Program, or any covered work, by linking or combining it with other code, such other code is not for 
 //that reason alone subject to any of the requirements of the GNU Affero GPL version 3.
 //
-using LuaInterface;
+using NLua;
 using System;
 using System.Collections.Generic;
 using System.IO;

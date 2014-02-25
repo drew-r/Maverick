@@ -16,6 +16,7 @@
 --
 
 function arr(t,...)
+arg = table.pack(...)
 if arg.n>0 then arg.n = nil table.insert(arg,1,t) t = arg 
 elseif type(t) ~= "table" and type(t) ~= "userdata" then t = {t}
 end
@@ -27,6 +28,7 @@ return Utility.ObjFromTable(t)
 end
 
 function str_arr(t,...)
+arg = table.pack(...)
 if arg.n>0 then arg.n = nil table.insert(arg,1,t) t = arg 
 elseif type(t) ~= "table" and type(t) ~= "userdata" then t = {t}
 end
@@ -79,9 +81,9 @@ function _lua_proxy(constructor_call, method_call)
 local proxy = {}	
 	return setmetatable(proxy, { 
 	__index = 
-		function(table,key)
-		 	local callable = {}
-		 	return setmetatable(callable, { __call = function(ct,...) return method_call(key,arg) end })  
+		function(t,key)
+		 	local callable = {}			
+		 	return setmetatable(callable, { __call = function(ct,...) local arg = table.pack(...) return method_call(key,arg) end })  
 			end,
 	__call = constructor_call })
 end

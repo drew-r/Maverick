@@ -20,13 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
 using System.Reflection;
-using LuaInterface;
+using NLua;
 using System.Collections;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Dynamic;
-using Lua511;
+
 
 
 namespace Maverick
@@ -120,7 +120,7 @@ namespace Maverick
             return o.GetType().Name;
         }
 
-        public static Type GetUnderlyingType(LuaInterface.ProxyType type)
+        public static Type GetUnderlyingType(NLua.ProxyType type)
         {
             return type.UnderlyingSystemType;
         }

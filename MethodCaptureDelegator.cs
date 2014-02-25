@@ -12,7 +12,7 @@ namespace Maverick
         {
             _target = target;
             Type targetGetType = _target.GetType();
-            _targetType = ((_static = (targetGetType == typeof(LuaInterface.ProxyType))) ? ((LuaInterface.ProxyType)_target).UnderlyingSystemType : targetGetType);
+            _targetType = ((_static = (targetGetType == typeof(NLua.ProxyType))) ? ((NLua.ProxyType)_target).UnderlyingSystemType : targetGetType);
         }
 
         readonly object _target;

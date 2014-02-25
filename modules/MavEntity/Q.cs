@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Linq.Dynamic;
-using LuaInterface;
+using NLua;
 using System.Collections;
 using Maverick;
 
