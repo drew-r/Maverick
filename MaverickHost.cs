@@ -1,24 +1,23 @@
+using Goose;
 using NLua;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
 
 namespace Maverick
 {
     class MaverickHost
     {
         AppManifest _appManifest;
+
+        VM _vm;
         
-        Lua _luaVM = new Lua();
-        public Lua LuaVM { get { return _luaVM; } }
         IMaverickLog _log;
 
 
-        //this class (along with alot of other code) needs to be isolated from environment (i.e the console)
-        //i think REPL should be implemented by Program - Program uses MaverickHost to either provide REPL, or to run a script or app if given a path
         public MaverickHost(params string[] args)
         {
             //provide a default log
@@ -28,38 +27,45 @@ namespace Maverick
             _log.Write("Initializing Configuration...");
             Configuration.Initialize(args);
 
-            _log.Write("Initializing AssemblyLocator...");
-            AssemblyLocator.Initialize();
-
             _log.Write("Initializing ServiceLocator...");
             ServiceLocator.Initialize();
 
             _log.Write("Preparing Lua virtual machine...");
-            _luaVM.DoString("require \"lib/CLRPackage\"");
-            _luaVM.DoString("require \"lib/Maverick\"");
-            importAssemblyNamespaces(Assembly.GetAssembly(this.GetType()));
-            _luaVM["maverick"] = this;
+            _vm = new VM();
+            _vm.Import(Assembly.GetExecutingAssembly());
+            _vm.DoString("require \"lib/Maverick\"");
+
+            
+            _vm["maverick"] = this;
             
             if (Configuration.REPL) { repl(); return; }
+            //if (Configuration.Drone) { drone(); return; }
                          
-            _appManifest = AppCompiler.Make(Configuration.AppPath);
-            
-            foreach (string reference in _appManifest.References)
+            _appManifest = AppCompiler.Make(_vm, Configuration.AppPath);
+
+            foreach (Assembly assembly in _appManifest.Assemblies)
             {
-                Assembly assembly;
-                if ((assembly = AssemblyLocator.ResolveAssembly(reference, true)) == null)
-                {
-                    throw new Exception("Unable to resolve assembly " + reference);
-                }
-                ImportAssembly(assembly);
-            }                                             
-       
+                initializeAssembly(assembly);
+            }
+
             //resolve the log service again in case it has been remapped
             _log = ServiceLocator.Resolve<IMaverickLog>();
 
           
         }
 
+        void initializeAssembly(Assembly assembly)
+        {
+            IEnumerable<MethodInfo> initializerMethods = from type in assembly.GetExportedTypes() from method in type.GetMethods() where method.IsDefined(typeof(MaverickAssemblyInitializer), false) select method;
+            foreach (MethodInfo initializerMethod in initializerMethods)
+            {
+                if (!initializerMethod.IsStatic) throw new Exception("Unable to invoke non-static assembly initializer: " + initializerMethod.Name);
+                if (initializerMethod.GetParameters().Count() > 0) throw new Exception("Unable to invoke assembly initializer with parameters: " + initializerMethod.Name);
+                _log.Write("Initializing assembly " + assembly.FullName + " with method " + initializerMethod.Name);
+                initializerMethod.Invoke(null, null);
+            }
+
+        }
 
 
         private void repl()
@@ -71,7 +77,7 @@ namespace Maverick
                 {
                     Console.Write(">");
                     line = Console.ReadLine();
-                    object[] res = _luaVM.DoString(line);
+                    object[] res = _vm.DoString(line);
                     if (res != null) { Console.Write(res); }
                 }
                 catch (Exception e)
@@ -82,44 +88,15 @@ namespace Maverick
         }
 
 
-        void initializeAssembly(Assembly assembly)  
-        {            
-                IEnumerable<MethodInfo> initializerMethods = from type in assembly.GetExportedTypes() from method in type.GetMethods() where method.IsDefined(typeof(MaverickAssemblyInitializer), false) select method;
-                foreach (MethodInfo initializerMethod in initializerMethods)
-                {
-                    if (!initializerMethod.IsStatic) throw new Exception("Unable to invoke non-static assembly initializer: " + initializerMethod.Name);
-                    if (initializerMethod.GetParameters().Count() > 0) throw new Exception("Unable to invoke assembly initializer with parameters: " + initializerMethod.Name);
-                    _log.Write("Initializing assembly " + assembly.FullName + " with method " + initializerMethod.Name);
-                    initializerMethod.Invoke(null, null);
-                }
-
-        }
-
-        void importAssemblyNamespaces(Assembly assembly)
-        {              
-            var assemblyNamespaces = (from type in assembly.GetExportedTypes() select new { Namespace = type.Namespace, Assembly = assembly.FullName }).Distinct();
-            foreach (var assemblyNamespace in assemblyNamespaces)
-            {
-                _log.Write("Importing " + assemblyNamespace.Assembly + " :: " + assemblyNamespace.Namespace);
-                _luaVM.DoString(String.Format("import('{0}','{1}')", assemblyNamespace.Assembly, assemblyNamespace.Namespace));
-            }
-                       
-        }
-
-        public void ImportAssembly(Assembly assembly)
-        {
-            initializeAssembly(assembly);
-            importAssemblyNamespaces(assembly);            
-        }
          
         internal void Run()
         {
             _log.Write("Executing root script body...");
-            _luaVM.DoString(_appManifest.Body);
+            _vm.DoString(_appManifest.Body);
             foreach (string include in _appManifest.Includes)
             {
                 _log.Write("Executing included script...");
-                _luaVM.DoString(include);
+                _vm.DoString(include);
             }
 
             if (_appContainers.Count > 0)
@@ -170,7 +147,7 @@ namespace Maverick
         }
         public void registerFunction(string path,object target, Delegate func)
         {
-            _luaVM.RegisterFunction(path, target, func.Method);
+            _vm.RegisterFunction(path, target, func.Method);
         }
 
     }

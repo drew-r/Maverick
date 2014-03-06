@@ -24,7 +24,9 @@ that reason alone subject to any of the requirements of the GNU Affero GPL versi
 function writeWithoutLicense(comment_str,input_file,output_file)
 local input_text = File.ReadAllText(input_file)
 local lclLicense = comment_str .. license:gsub("\n","\r\n" .. comment_str) .. "\r\n"
-File.WriteAllText(output_file, input_text:gsub(lclLicense,""))
+local output_text = input_text:replace(lclLicense,"")
+
+File.WriteAllText(output_file, output_text)
 input_text = nil
 end
 
@@ -56,7 +58,7 @@ for i=0,files.Length-1 do
 	local comment_str = xcm[string.lower(Path.GetExtension(file))]
 	if comment_str then
 				
-		writeWithLicense(comment_str,file, output_path)
+		writeWithoutLicense(comment_str,file, output_path)
 		Console.WriteLine("Processed file " .. file)
 	else
 		File.Copy(file,output_path,true)

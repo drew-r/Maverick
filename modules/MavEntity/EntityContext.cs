@@ -7,18 +7,29 @@ using System.Reflection;
 using System.Dynamic;
 using System.Linq.Dynamic;
 using Maverick;
+using System.Data.SqlClient;
 
 namespace MavEntity
 {
     public class EntityContext : DataContext
     {
+
+        public EntityContext(IDbConnection db)  : base(db)
+        {
+            //validate();        
+        }           
         public EntityContext(string connectionStr) : base(connectionStr)
+        {
+            //validate();            
+        }
+
+        void validate()
         {
             if (!DatabaseExists())
             {
-                throw new InvalidOperationException("Database does not exist.");
+                throw new InvalidOperationException("Invalid connection string.");
             }            
-        }       
+        }
 
         public IQueryable<dynamic> this[string entityType]
         {

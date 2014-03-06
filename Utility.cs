@@ -17,40 +17,8 @@ namespace Maverick
 {
    
     public static class Utility
-    {      
-        public static IEnumerable<string> StringArrayFromTable(LuaTable t)
-        {
-            return ObjArrayFromTable(t).Cast<string>().ToArray();
-        }
-
-        public static object[] ObjArrayFromTable(LuaTable t)
-        {
-            object[] r = new object[t.Values.Count];
-            int i = 0;
-            foreach (object value in t.Values)
-            {
-                if (value is LuaTable) { r[i] = ObjFromTable((LuaTable)value); }
-                else
-                {
-                    r[i] = value;
-                }
-                i++;
-            }
-            return r;
-        }
-        public static object ObjFromTable(LuaTable t)
-        {
-            Dictionary<string, object> args = new Dictionary<string, object>();
-            
-            foreach (DictionaryEntry item in t)
-            {
-                object obj;
-                if (item.Key is double) { return ObjArrayFromTable(t); }
-                if (item.Value is LuaTable) { obj = ObjFromTable((LuaTable)item.Value); } else { obj = item.Value; }
-                args.Add(item.Key.ToString(), obj);
-            }
-            return args;
-        }
+    { 
+      
         public class LuaNameValueCollection
         {
             public LuaNameValueCollection(NameValueCollection nvc)
@@ -107,6 +75,26 @@ namespace Maverick
         public static Type GetUnderlyingType(NLua.ProxyType type)
         {
             return type.UnderlyingSystemType;
+        }
+
+        public static bool TryAdaptLuaValue(object value, Type targetType, out object result)
+        {
+            if (value.GetType() == typeof(double))
+            {
+                if (targetType == typeof(Int16))
+                {
+                    result = Convert.ToInt16(value);
+                    return true;
+                }
+                if (targetType == typeof(Int32))
+                {
+                    result = Convert.ToInt32(value);
+                    return true;
+                }
+            }
+
+            result = value;
+            return false;
         }
 
         //public static class LuaDelegateConverter

@@ -14,6 +14,42 @@ asyncThread.Sleep(1000):success(function() print "one" end):error(function(e) pr
 asyncThread.Sleep(1000):success(function() print "two" end)
 
 
+serv:GET('/memtest',function(req,res)
+
+--print("memtest")
+
+	--local ctx = EntityContext("Server=localhost;Database=demoapi;Trusted_Connection=True;") 
+	--local data = ctx.Person
+	--local query =  Q(ctx.Person)
+	--local str = JSON.stringify(query)
+	--res:Close(str)
+
+	--test 1 -- memory stable
+	--res:Close(JSON.stringify(EntityContext("Server=localhost;Database=demoapi;Trusted_Connection=True;Min Pool Size=5").Person))
+	
+	--test 2 -- out of memory
+	--local db = EntityContext("Server=localhost;Database=demoapi;Trusted_Connection=True;Min Pool Size=5")
+	--local data = db.Person	
+	--_async.JSON.write(res.OutputStream, data):success(function() res:Close() db:Dispose() db = nil data = nil res = nil collectgarbage() end)
+
+
+	--test 3
+	local db = EntityContext("Server=localhost;Database=demoapi;Trusted_Connection=True;Min Pool Size=5")
+	local data = db.Person
+	local asyncJSON = async(JSON)
+	local promise = asyncJSON.write(res.OutputStream, data)
+	promise:success(function() res:Close() db:Dispose() db = nil data = nil res = nil asyncJSON = nil promise = nil collectgarbage() end)
+	
+
+	--ctx = nil
+	--data = nil
+	--query = nil
+	--str = nil
+--	
+	
+end)
+
+
 --plain sync
 serv:GET('/',function(req,res)
 
@@ -64,6 +100,10 @@ sw = StreamWriter(res.OutputStream)
 sw:Write(JSON.stringify(Q(data.Person)))
 res:Close()
 data:Dispose()
+req = nil
+res = nil
+sw = nil
+data = nil
 
 end)
 

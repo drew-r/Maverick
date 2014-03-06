@@ -18,7 +18,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 LicenseFile=..\LICENSE
-InfoAfterFile=..\README
+InfoBeforeFile=..\README.md
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
@@ -39,7 +39,7 @@ Name: "{app}"; Permissions: users-modify;
 
 [Files]
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\README"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\*"; DestDir: "{app}"; Excludes: "maverick.log"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

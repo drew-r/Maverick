@@ -70,19 +70,7 @@ namespace Maverick
                     
                     if (!parameterType.IsAssignableFrom(argType))
                     {
-                        if (argType == typeof(double))
-                        {
-                            if (parameterType == typeof(Int16))
-                            {
-                                args[p_idx] = Convert.ToInt16(arg);
-                                continue;
-                            }
-                            if (parameterType == typeof(Int32))
-                            {
-                                args[p_idx] = Convert.ToInt32(arg);
-                                continue;
-                            }
-                        }                       
+                        if (Utility.TryAdaptLuaValue(args[p_idx], parameterType, out args[p_idx])) continue;                       
                         match = false;
                     }
                 }

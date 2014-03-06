@@ -52,6 +52,10 @@ namespace Maverick
             if (_proxyType.GetMember("set_" + name).Count() > 0)
             {
                 PropertyInfo prop = _proxyType.GetProperty(name);
+                if (!prop.PropertyType.IsAssignableFrom(value.GetType()) && !Utility.TryAdaptLuaValue(value,prop.PropertyType, out value))
+                {
+                    return false;
+                } 
                 prop.SetValue(_proxyObj, value, null);
                 return true;
             }

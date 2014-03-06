@@ -2,9 +2,14 @@ http:GET('/person',
 function(request,response)
 
 --get all people
-auth.required(function()
-response.json(entityManager.Person)
-end)
+--auth.required(function()
+
+	local ctx = db()
+	local data = ctx.Person
+
+response.json(data):success(function() response:Close() gc(data,ctx,request,response) data=nil ctx=nil request=nil response=nil collectgarbage() end)
+
+--end)
 
 end)
 
@@ -12,8 +17,8 @@ http:GET('/person/:id',
 function(request,response)
 
 --get person
-local person = byID(entityManager.Person,request.RouteParams.id)
-response.json(person)
+local person = byID(db().Person,request.RouteParams.id)
+response.json(person):success(function() response:Close() person = nil end)
 
 end)
 
@@ -27,20 +32,21 @@ newperson.Forename = request.Body.Forename
 newperson.Surname = request.Body.Surname
 newperson.AuthUser = request.Body.AuthUser
 newperson.AuthPass = request.Body.AuthPass
-entityManager:Add(newperson)
-response.json(newperson)
+db():Add(newperson)
+response.json(newperson):success(function() response:Close() newperson = nil end)
 end
 )
 
 http:PUT('/person/:id',function(request,response)
 
 --update person
-local person = byID(entityManager.Person,request.RouteParams.id)
+local person = byID(db().Person,request.RouteParams.id)
 person.Forename = request.Body.Forename
 person.Surname = request.Body.Surname
-entityManager:Save()
-response.json(person)
-person = nil
+db():Save()
+response.json(person):success(function() response:Close() person = nil end)
+
 end
 )
+
 

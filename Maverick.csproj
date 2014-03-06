@@ -92,6 +92,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Goose, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Goose.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLua">
       <HintPath>lib\NLua.dll</HintPath>
@@ -105,10 +109,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCompiler.cs" />
-    <Compile Include="AssemblyLocator.cs" />
     <Compile Include="MethodCaptureDelegator.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="CSharpCompiler.cs" />
     <Compile Include="DynamicProxy.cs" />
     <Compile Include="AppManifest.cs" />
     <Compile Include="FileManifest.cs" />
@@ -131,7 +133,7 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="app.config" />
     <None Include="lib\CLRPackage.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -166,14 +168,19 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\lua52.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /YE $(ProjectDir)modules\MavHttp\$(OutDir)* $(ProjectDir)$(OutDir)
-xcopy /YE $(ProjectDir)modules\MavEntity\$(OutDir)* $(ProjectDir)$(OutDir)
-xcopy /YE $(ProjectDir)codesamples $(ProjectDir)$(OutDir)codesamples\
-</PostBuildEvent>
+    <PostBuildEvent>xcopy /YE "$(ProjectDir)modules\MavHttp\$(OutDir)*" "$(ProjectDir)$(OutDir)"
+xcopy /YE "$(ProjectDir)modules\MavEntity\$(OutDir)*" "$(ProjectDir)$(OutDir)"
+xcopy /YE "$(ProjectDir)codesamples" "$(ProjectDir)$(OutDir)codesamples\"
+xcopy /YE "$(ProjectDir)lib\lua52.dll" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

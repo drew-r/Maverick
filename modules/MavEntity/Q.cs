@@ -6,6 +6,7 @@ using System.Linq.Dynamic;
 using NLua;
 using System.Collections;
 using Maverick;
+using Goose;
 
 namespace MavEntity
 {
@@ -23,7 +24,7 @@ namespace MavEntity
         
         
 
-        object[] a(LuaTable t) { return Utility.ObjArrayFromTable(t); }
+        object[] a(LuaTable t) { return Goose.Util.ObjArrayFromTable(t); }
 
         public IQueryable Result() { return _data; }
 
@@ -82,6 +83,11 @@ namespace MavEntity
         public IEnumerator GetEnumerator()
         {
             return _data.GetEnumerator();
+        }
+
+        public dynamic this[int idx]
+        {
+            get { return (_data.Skip(idx).Take(1) as IQueryable<dynamic>).First(); }
         }
     }
 

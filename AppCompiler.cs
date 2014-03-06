@@ -1,3 +1,5 @@
+using Goose;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +17,7 @@ namespace Maverick
         static FileManifest preprocess(string srcPath)
         {
             string[] appScript = File.ReadAllLines(srcPath);
-            string srcPathDir = Path.GetDirectoryName(srcPath) + "\\";
+            string srcPathDir = Path.GetDirectoryName(srcPath) + Path.DirectorySeparatorChar;
             List<string> sanitizedAppScript = new List<string>();
             List<string> includes = new List<string>();
             List<string> compiles = new List<string>();
@@ -31,7 +33,7 @@ namespace Maverick
                 if (preprocessorInstruction.StartsWith("include"))
                 {
                     string includeFile = preprocessorInstruction.Split(' ')[1].Trim('\'', '"');
-                    FileManifest includeAcr = preprocess(Path.GetDirectoryName(srcPath) + "\\" + includeFile);
+                    FileManifest includeAcr = preprocess(Path.GetDirectoryName(srcPath) + Path.DirectorySeparatorChar + includeFile);
                     includes.Add(includeAcr.Body);
                     includes.AddRange(includeAcr.Includes);
                     compiles.AddRange(includeAcr.Compiles);
@@ -68,7 +70,7 @@ namespace Maverick
                     }
                     else
                     {
-                        string filename = arg.Trim('\'', '"').Replace('/', '\\');
+                        string filename = arg.Trim('\'', '"');
                         src = File.ReadAllText(Path.Combine(Path.GetDirectoryName(srcPath), filename));
                         _log.Write("\tCompiles " + filename);
                     }
@@ -95,21 +97,23 @@ namespace Maverick
             return new FileManifest(String.Join("\r\n", sanitizedAppScript), includes.ToArray(), compiles.ToArray(), references.ToArray());
 
         }
-        public static AppManifest Make(string appPath)
+
+        //todo refactor
+        public static AppManifest Make(VM vm, string appPath)
         {
             FileManifest ppr = preprocess(appPath);
             AppManifest appMan = new AppManifest(ppr.Body, ppr.Includes, ppr.Compiles, ppr.References);
-            _log.Write("Adding reference to System...");
-            appMan.AddReference(AssemblyLocator.ResolveReference("System"));
-            _log.Write("Adding reference to mscorlib...");
-            appMan.AddReference(AssemblyLocator.ResolveReference("mscorlib"));
+            
             
             if (ppr.Compiles.Count() > 0)
             {
                 _log.Write("Compiling C#...");
-                Assembly mavDynamic = CSharpCompiler.Compile(Path.Combine(Path.GetTempPath(), "MaverickDynamic"), ppr.Compiles, ppr.References);                             
-               appMan.AddReference(mavDynamic.Location);
-                _log.Write("Adding reference to MaverickDynamic...");
+                appMan.AddAssembly(vm.Compile(Path.Combine(Path.GetTempPath(), "MaverickDynamic"), ppr.Compiles, ppr.References));
+            }
+
+            foreach (string reference in ppr.References)
+            {
+                appMan.AddAssembly(Goose.AssemblyLocator.ResolveAssembly(reference));
             }
 
             return appMan;

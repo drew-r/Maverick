@@ -54,7 +54,7 @@ namespace Maverick
         public static bool Verbose { get { return _verbose; } }
         static bool _repl = false;
         public static bool REPL { get { return _repl; } }
-
-
+        static bool _drone;
+        public static bool Drone { get { return _drone; } }
     }
 }

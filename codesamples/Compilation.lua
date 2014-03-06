@@ -4,7 +4,7 @@ namespace InlineCompile {
 	public class InlineCompile
 	{
 
-	public InlineDeclTest(){
+	public InlineCompile(){
 	Console.WriteLine("InlineCompile");
 }
 
@@ -19,3 +19,6 @@ src = str_arr("using System; namespace NewNamespace { public class NewClass { pu
 assembly = CSharpCompiler.Compile("NewAssembly.dll",src)
 maverick:ImportAssembly(assembly)
 NewClass()
+
+
+Console.ReadKey()
