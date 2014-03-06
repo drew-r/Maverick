@@ -2,8 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Maverick"
-#define MyAppVersion "0.8.2"
+#define MyAppVersion "0.9.0 experimental"
 #define MyAppExeName "Maverick.exe"
+
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -16,8 +17,8 @@ AppVersion={#MyAppVersion}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-LicenseFile=Build\LICENSE
-InfoAfterFile=Build\README
+LicenseFile=..\LICENSE
+InfoBeforeFile=..\README.md
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
@@ -33,10 +34,14 @@ Name: associatelua; Description: "&Open .lua files with Maverick";
 Name: associatemav; Description: "&Open .mav files with Maverick"; 
 Name: addToPATH; Description: "&Add Maverick to PATH"; 
 
+[Dirs]
+Name: "{app}"; Permissions: users-modify;
 
 [Files]
-Source: "Build\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Build\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Release\*"; DestDir: "{app}"; Excludes: "maverick.log"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

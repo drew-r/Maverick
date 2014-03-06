@@ -1,21 +1,5 @@
---Copyright © 2013 Drew Rathbone.
---drewrathbone@gmail.com 
---
---This file is part of Maverick.
---
---Maverick is free software, you can redistribute it and/or modify it under the terms of GNU Affero General Public License 
---as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
---You should have received a copy of the the GNU Affero General Public License, along with Maverick. 
---
---Maverick is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
---of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
---
---Additional permission under the GNU Affero GPL version 3 section 7: 
---If you modify this Program, or any covered work, by linking or combining it with other code, such other code is not for 
---that reason alone subject to any of the requirements of the GNU Affero GPL version 3.
---
 --libs--
-#reference 'Newtonsoft.Json.dll'													--reference any dependencies required to compile your csharp
+#reference 'Newtonsoft.Json'													--reference any dependencies required to compile your csharp
 #reference 'System.Data.Linq.dll'	
 #reference 'MavEntity.dll'
 #reference 'MavHttp.dll'
@@ -27,13 +11,15 @@
 #include 'http/person.lua'															--include any additional lua 
 #include 'http/user.lua'
 																						
-
-
 																						
 --configuration
 
 --entity manager is a module that takes care of entity persistence and retrieval
-entityManager = EntityContext('Server=localhost;Database=demoapi;Trusted_Connection=True;')
+function db()
+
+return EntityContext('Server=localhost;Database=demoapi;Trusted_Connection=True;')
+
+end
 
 --create a server from the http module
 http = Http()
@@ -45,13 +31,14 @@ http:OPTIONS('/:nothing',function(req,res) res:Close() end)
 
 --middleware to add CORs access control headers
 http:use(function(request,response,next)
-
-	        local accCtrlReqHdr = request.Headers["Access-Control-Request-Headers"]
+local req,res = request,response
+	
+	        local accCtrlReqHdr = req.Headers["Access-Control-Request-Headers"]
 	        if accCtrlReqHdr then
-	        	response:AddHeader("Access-Control-Allow-Headers", accCtrlReqHdr)
+	        	res:AddHeader("Access-Control-Allow-Headers", accCtrlReqHdr)
 	    	end
-            response:AddHeader("Access-Control-Allow-Origin","*")
-            response:AddHeader("Access-Control-Allow-Methods","OPTIONS,PUT,POST,GET")
+            res:AddHeader("Access-Control-Allow-Origin","*")
+            res:AddHeader("Access-Control-Allow-Methods","OPTIONS,PUT,POST,GET")
             next:Invoke()
 end)
 
@@ -68,7 +55,7 @@ end)
 http:use(function(request,response,next)
 response.json = function(obj)
 	response.ContentType = "application/json"
-	JSON.write(response.OutputStream,obj)
+	return _async.JSON.write(response.OutputStream,obj)
 end
 next:Invoke()
 end)
@@ -80,7 +67,7 @@ http:use(function(request,response,next)
 
 	--declared within lexical scope of request & response 				
 	auth.validateCredentials = function(username,password)
-	local person = Q(entityManager.Person):Where("AuthUser=@0 and AuthPass=@1",{username , password}):SingleOrDefault()
+	local person = Q(db().Person):Where("AuthUser=@0 and AuthPass=@1",{username , password}):SingleOrDefault()
 	if person then 
 		request.session = {}
 		request.session.identity = person.ID			
@@ -91,15 +78,15 @@ http:use(function(request,response,next)
 
 	--just one of many ways to enforce authentication (a container / callback)
 	auth.required = function(callback)
-
 		--can request be authenticated? 
 		local authenticated = false
 		if request.Headers['Authorization'] then 
+
 			local authStr = request.Headers['Authorization']
 			local s1 = string.find(authStr,' ')	
 			authStr = string.sub(authStr,s1+1)
 			authStr = Convert.FromBase64String(authStr)
-			authStr = Utility.GetEncoding("utf-8"):GetString(authStr)
+			authStr = Encoding.UTF8:GetString(authStr)
 			local s2 = string.find(authStr,':')
 			local username = string.sub(authStr,0,s2-1)
 			local password = string.sub(authStr,s2+1)
@@ -113,25 +100,25 @@ http:use(function(request,response,next)
 		callback()
 		return
 		end
+
 		--no, send authentication response
-		response.StatusCode = 401
+		response.StatusCode = Convert.ToInt32(401)
 		response:AddHeader("WWW-Authenticate",'Basic realm="demoapi"')
 		response:Close()
+		
 
 	end
-
 
 
 next:Invoke()
 end)
 
 
-app = maverick:app()																	--create an app instance
-app:run(function()																		--show time! run is called after included Lua is executed.
-
+app = maverick:app(function()							--show time! function passed in here is called after included Lua is executed.
+  --the app instance returned can be indexed for objects via a string and so can be used to store app scope data
 	http:listen('http://+:8080/')
 	Console.WriteLine("Listening..")
-	Console.ReadKey()
+	_async.Console.ReadKey():success(function() exit() end)
 
 end)
 

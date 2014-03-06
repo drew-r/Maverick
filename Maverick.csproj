@@ -29,6 +29,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,7 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -91,16 +92,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="lua51, Version=0.0.0.0, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=x86">
+    <Reference Include="Goose, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\lua51.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.36861, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\LuaInterface.dll</HintPath>
+      <HintPath>lib\Goose.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NLua">
+      <HintPath>lib\NLua.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -110,9 +109,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCompiler.cs" />
-    <Compile Include="AssemblyLocator.cs" />
+    <Compile Include="MethodCaptureDelegator.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="CSharpCompiler.cs" />
     <Compile Include="DynamicProxy.cs" />
     <Compile Include="AppManifest.cs" />
     <Compile Include="FileManifest.cs" />
@@ -120,12 +118,14 @@
     <Compile Include="IMaverickLog.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MaverickAssemblyInitializer.cs" />
+    <Compile Include="Promise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Scheduler.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="MaverickApp.cs" />
     <Compile Include="MaverickHost.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="app.config" />
     <None Include="lib\CLRPackage.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -168,14 +168,19 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\lua52.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /YE $(ProjectDir)modules\MavHttp\$(OutDir)* $(ProjectDir)$(OutDir)
-xcopy /YE $(ProjectDir)modules\MavEntity\$(OutDir)* $(ProjectDir)$(OutDir)
-xcopy /YE $(ProjectDir)codesamples $(ProjectDir)$(OutDir)codesamples\
-</PostBuildEvent>
+    <PostBuildEvent>xcopy /YE "$(ProjectDir)modules\MavHttp\$(OutDir)*" "$(ProjectDir)$(OutDir)"
+xcopy /YE "$(ProjectDir)modules\MavEntity\$(OutDir)*" "$(ProjectDir)$(OutDir)"
+xcopy /YE "$(ProjectDir)codesamples" "$(ProjectDir)$(OutDir)codesamples\"
+xcopy /YE "$(ProjectDir)lib\lua52.dll" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

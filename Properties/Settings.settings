@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ServiceMap" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">IMaverickLog:=Log</Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

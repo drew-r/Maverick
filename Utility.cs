@@ -1,85 +1,24 @@
-//Copyright © 2013 Drew Rathbone.
-//drewrathbone@gmail.com 
-//
-//This file is part of Maverick.
-//
-//Maverick is free software, you can redistribute it and/or modify it under the terms of GNU Affero General Public License 
-//as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
-//You should have received a copy of the the GNU Affero General Public License, along with Maverick. 
-//
-//Maverick is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-//of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-//
-//Additional permission under the GNU Affero GPL version 3 section 7: 
-//If you modify this Program, or any covered work, by linking or combining it with other code, such other code is not for 
-//that reason alone subject to any of the requirements of the GNU Affero GPL version 3.
-//
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
 using System.Reflection;
-using LuaInterface;
+using NLua;
 using System.Collections;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Dynamic;
+
+
 
 namespace Maverick
 {
    
     public static class Utility
-    {
-        //public static Dictionary<string, string> ToDictionary(this NameValueCollection nvc)
-        //{
-        //    Dictionary<string, string> args = new Dictionary<string, string>();
-        //    foreach (string arg in nvc.Keys)
-        //    {
-        //        args.Add(arg, nvc[arg]);
-        //    }
-        //    return args;
-        //}
-
-        public static byte[] GetBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-
-        		
-        public static IEnumerable<string> StringArrayFromTable(LuaTable t)
-        {
-            return ObjArrayFromTable(t).Cast<string>().ToArray();
-        }
-
-        public static object[] ObjArrayFromTable(LuaTable t)
-        {
-            object[] r = new object[t.Values.Count];
-            int i = 0;
-            foreach (object value in t.Values)
-            {
-                if (value is LuaTable) { r[i] = ObjFromTable((LuaTable)value); }
-                else
-                {
-                    r[i] = value;
-                }
-                i++;
-            }
-            return r;
-        }
-        public static object ObjFromTable(LuaTable t)
-        {
-            Dictionary<string, object> args = new Dictionary<string, object>();
-            
-            foreach (DictionaryEntry item in t)
-            {
-                object obj;
-                if (item.Key is double) { return ObjArrayFromTable(t); }
-                if (item.Value is LuaTable) { obj = ObjFromTable((LuaTable)item.Value); } else { obj = item.Value; }
-                args.Add(item.Key.ToString(), obj);
-            }
-            return args;
-        }
+    { 
+      
         public class LuaNameValueCollection
         {
             public LuaNameValueCollection(NameValueCollection nvc)
@@ -105,13 +44,7 @@ namespace Maverick
                 return Activator.CreateInstance(t);
             }            
             else return null;
-        }
-
-        public static Encoding GetEncoding(string encodingName)
-        {
-            return Encoding.GetEncoding(encodingName);
-        }
-
+        }       
 
         public static string ReplaceString(string target, string find, string replace)
         {
@@ -133,6 +66,79 @@ namespace Maverick
 
             return msgBuilder.ToString();
         }
-        
-    }
+
+        public static string TypeName(object o)
+        {
+            return o.GetType().Name;
+        }
+
+        public static Type GetUnderlyingType(NLua.ProxyType type)
+        {
+            return type.UnderlyingSystemType;
+        }
+
+        public static bool TryAdaptLuaValue(object value, Type targetType, out object result)
+        {
+            if (value.GetType() == typeof(double))
+            {
+                if (targetType == typeof(Int16))
+                {
+                    result = Convert.ToInt16(value);
+                    return true;
+                }
+                if (targetType == typeof(Int32))
+                {
+                    result = Convert.ToInt32(value);
+                    return true;
+                }
+            }
+
+            result = value;
+            return false;
+        }
+
+        //public static class LuaDelegateConverter
+        //{
+        //    public static Action Action;
+        //    public static Action<object> Action_1;
+        //    public static Action<object,object> Action_2;
+        //    public static Action<object, object, object> Action_3;
+        //    public static Action<object, object, object, object> Action_4;
+        //    public static Action<object, object, object, object, object> Action_5;
+        //    public static Action<object, object, object, object, object, object> Action_6;
+        //    public static Action<object, object, object, object, object, object, object> Action_7;
+        //    public static Action<object, object, object, object, object, object, object, object> Action_8;
+        //    public static Action<object, object, object, object, object, object, object, object, object> Action_9;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object> Action_10;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object> Action_11;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object> Action_12;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object> Action_13;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object, object> Action_14;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Action_15;
+        //    public static Action<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object,object> Action_16;
+
+        //    public static Func<object> Func;
+        //    public static Func<object, object> Func_1;
+        //    public static Func<object, object, object> Func_2;
+        //    public static Func<object, object, object, object> Func_3;
+        //    public static Func<object, object, object, object, object> Func_4;
+        //    public static Func<object, object, object, object, object, object> Func_5;
+        //    public static Func<object, object, object, object, object, object, object> Func_6;
+        //    public static Func<object, object, object, object, object, object, object, object> Func_7;
+        //    public static Func<object, object, object, object, object, object, object, object, object> Func_8;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object> Func_9;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object> Func_10;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object> Func_11;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object> Func_12;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_13;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_14;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_15;
+        //    public static Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> Func_16;
+
+        //}
+
+
+    }               
+
+ 
 }

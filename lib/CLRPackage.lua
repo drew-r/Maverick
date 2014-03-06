@@ -1,19 +1,3 @@
---Copyright © 2013 Drew Rathbone.
---drewrathbone@gmail.com 
---
---This file is part of Maverick.
---
---Maverick is free software, you can redistribute it and/or modify it under the terms of GNU Affero General Public License 
---as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
---You should have received a copy of the the GNU Affero General Public License, along with Maverick. 
---
---Maverick is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
---of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
---
---Additional permission under the GNU Affero GPL version 3 section 7: 
---If you modify this Program, or any covered work, by linking or combining it with other code, such other code is not for 
---that reason alone subject to any of the requirements of the GNU Affero GPL version 3.
---
 ---
 --- This lua module provides auto importing of .net classes into a named package.
 --- Makes for super easy use of LuaInterface glue
@@ -31,23 +15,39 @@
 if not luanet then require 'luanet' end
 
 local packages = {}
+local _log_clr_cache = false
+function LOG_CLR_CACHE() 
+  _log_clr_cache = true
+end
+local function c_log(msg) 
+ if _log_clr_cache then 
+ 	maverick:log(msg) 		
+ 	end 
+end
+
 
 local mt = {
 	--- Lookup a previously unfound class and add it to our table
 	__index = function(package, classname)
-		local class = rawget(package, classname)
+	
+	local class = rawget(package, classname) 
+                  or  luanet.import_type(package.packageName .. "." .. classname)      
+        
+    if class then 
+    c_log("Cached pkg " .. package.packageName .. " cls " .. classname)
+    package[classname] = 	class	-- keep what we found around, so it will be shared
+    else    
+    end
 
-		if class == nil then
-			class = luanet.import_type(package.packageName .. "." .. classname)
-			package[classname] = class		-- keep what we found around, so it will be shared
-		end
-
-		return class
+	return class
 	end
-	}
+}
+
 
 local globalMT = {
 	__index = function(T,classname)
+	if classname == "_async" then return setmetatable({},{__index = function(t,i) return async(_G[i]) end}) end
+	--if classname == "_generic" then return setmetatable({}, { __index = function(t,i) return generic(_G[i]) end }) end
 			for i,package in ipairs(packages) do
 			    local class = package[classname]
 				if class then
@@ -65,7 +65,6 @@ function CLRPackage(assemblyName, packageName)
   -- a sensible default...
   packageName = packageName or assemblyName
   luanet.load_assembly(assemblyName)			-- Make sure our assembly is loaded
-
   -- FIXME - table.packageName could instead be a private index (see Lua 13.4.4)
   t.packageName = packageName
   setmetatable(t, mt)
@@ -82,7 +81,7 @@ function import (assemblyName, packageName)
    		 packageName = assemblyName
    	 end
     end
-    local t = CLRPackage(assemblyName,packageName)
+    local t = CLRPackage(assemblyName,packageName)    
     table.insert(packages,t)
     return t
 end
@@ -108,7 +107,7 @@ function enum(o)
 end
 
 -- nearly always need this!
-import "System"
+--import "System" --deprecated - should already be imported
 
 
 

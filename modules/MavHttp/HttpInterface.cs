@@ -1,19 +1,3 @@
-//Copyright © 2013 Drew Rathbone.
-//drewrathbone@gmail.com 
-//
-//This file is part of Maverick.
-//
-//Maverick is free software, you can redistribute it and/or modify it under the terms of GNU Affero General Public License 
-//as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
-//You should have received a copy of the the GNU Affero General Public License, along with Maverick. 
-//
-//Maverick is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
-//of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-//
-//Additional permission under the GNU Affero GPL version 3 section 7: 
-//If you modify this Program, or any covered work, by linking or combining it with other code, such other code is not for 
-//that reason alone subject to any of the requirements of the GNU Affero GPL version 3.
-//
 using Maverick;
 using System;
 using System.Collections.Generic;
@@ -22,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MavHttp
@@ -47,13 +32,13 @@ namespace MavHttp
                     _listener.Prefixes.Add(uriPrefix); 
                 }
                 _listener.Start();
-                AsyncCallback callback = new AsyncCallback(arg => contextCallback(arg));
 
+                Scheduler.Request();
                 new Task(delegate
                 {
                     while (State == HttpInterfaceState.Running)
                     {
-                        IAsyncResult res = _listener.BeginGetContext(callback, null);
+                        IAsyncResult res = _listener.BeginGetContext(contextCallback, null);
                         res.AsyncWaitHandle.WaitOne();                        
                     }
                 }).Start();                
@@ -66,24 +51,29 @@ namespace MavHttp
         }
 
         IMaverickLog _log = ServiceLocator.Resolve<IMaverickLog>();
+
         
+
         private void contextCallback(IAsyncResult arg)
         {
             HttpListenerContext context = _listener.EndGetContext(arg);
-            try
-            {
-                _contextDispatcher.Dispatch(context);
-            }
-            catch (Exception e)
-            {
-                context.Response.StatusCode = 500;
-                if (ExceptionResponseEnabled) { ExceptionResponse(context.Response, e); }
-            }
-            finally
-            {
-                try { context.Response.Close(); }
-                catch (Exception e) { }
-            }
+            Scheduler.Enqueue(() => 
+            {            
+                try
+                {
+                    ContextDispatcher.Dispatch(context);
+                }
+                catch (Exception e)
+                {
+                    context.Response.StatusCode = 500;
+                    if (ExceptionResponseEnabled) { ExceptionResponse(context.Response, e); }
+                }
+                finally
+                {
+                    //try { context.Response.Close(); }
+                    //catch (Exception e) { }
+                }                
+            });
             
         }
 

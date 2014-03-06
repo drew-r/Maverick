@@ -1,3 +1,16 @@
+Maverick
+--------
+
+* Free software released under the MIT license.
+* Framework that host scripts and applications written in a mix of Lua and C# compiled on the fly.
+* Includes a middleware oriented HTTP server module.
+* Ships with a simple Linq2Sql entity persistence module.
+* Ships with a demo web API built on these modules, among other code samples.
+* Documentation coming soon!
+
+License
+-------
+
 Copyright © 2014 Drew Rathbone
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
