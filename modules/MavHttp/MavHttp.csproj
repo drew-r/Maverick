@@ -100,7 +100,6 @@
     <ProjectReference Include="..\..\Maverick.csproj">
       <Project>{e9401664-a0ee-4ccd-8857-692fd4a1ca80}</Project>
       <Name>Maverick</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
